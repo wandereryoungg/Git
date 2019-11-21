@@ -1,6 +1,7 @@
 package com.example.coolweather;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -51,7 +53,7 @@ public class WeatherActivity extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
     private String weatherId;
     DrawerLayout drawerLayout;
-    private Button btnBack;
+    private Button btnSelect;
     private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,7 @@ public class WeatherActivity extends AppCompatActivity {
             requestBingPic(address);
         }
 
-        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        refreshLayout.setColorSchemeResources(R.color.colorAccent,R.color.colorPrimary,R.color.colorPrimaryDark);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -91,7 +93,7 @@ public class WeatherActivity extends AppCompatActivity {
             }
         });
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
+        btnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(GravityCompat.START);
@@ -138,26 +140,28 @@ public class WeatherActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
+                Log.d("young","onDrawerSlide");
             }
 
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
-                btnBack.setVisibility(View.GONE);
+                btnSelect.setVisibility(View.GONE);
                 Log.d("young","onDrawerOpened");
             }
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
-                btnBack.setVisibility(View.VISIBLE);
+                btnSelect.setVisibility(View.VISIBLE);
                 Log.d("young","onDrawerClosed");
             }
 
             @Override
             public void onDrawerStateChanged(int newState) {
+                Log.d("young","onDrawerStateChanged");
 
             }
         });
+
     }
 
 
@@ -216,7 +220,7 @@ public class WeatherActivity extends AppCompatActivity {
         bingPicImg = findViewById(R.id.bing_pic_img);
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
         drawerLayout = findViewById(R.id.drawerLayout);
-        btnBack = findViewById(R.id.btn_back);
+        btnSelect = findViewById(R.id.btn_select);
     }
 
     private void showWeatherInfo(HeWeatherBean weather) {
@@ -250,6 +254,9 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+
+        Intent intent = new Intent(this,AutoUpdateService.class);
+        startService(intent);
     }
 
     @Override
